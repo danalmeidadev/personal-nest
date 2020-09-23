@@ -2,8 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Strategy, ExtractJwt } from 'passport-jwt';
-import { JwtPayload } from './interfaces/jwt-interface.payload';
-import { UserRepository } from './user.repository';
+import { UserCredentialsDTO } from 'src/user/dtos/user.credentialsDTO';
+import { UserRepository } from 'src/user/user.repository';
+
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -13,12 +14,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: '123mudar',
+      secretOrKey: 'personal!@#$%',
     });
   }
 
-  async validate(payload: JwtPayload) {
-    const { email } = payload;
+  async validate(userCredentials: UserCredentialsDTO) {
+    const { email } = userCredentials;
     const user = await this.userRepository.findOne({ email });
 
     if (!user) {
